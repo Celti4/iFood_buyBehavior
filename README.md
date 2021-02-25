@@ -8,5 +8,13 @@
 
 <p align="center">
  <a href="#Objective">Objective</a>
-    <p> The Objective of this project is to analyse my behavior in a delivery App after the Covid Pandemic of 2020, that includes my Average Spend, Frequency of order and a Hypothesis Test  </p>
+    <p> The Objective of this project is to analyse my behavior in a delivery App after the Covid Pandemic of 2020 </p>
 </p>
+
+
+<p align="center">
+    <a href = "#Description">Description</a>
+        <p> The analysis includes my Average Spend, Frequency of use and a Hypothesis Test to compare if there is a difference between those metrics Before/After</p>
+</p>
+
+
