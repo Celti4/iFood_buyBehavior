@@ -7,6 +7,6 @@
 
 
 <p align="center">
- <a href="#objetivo">Objetivo</a> •
-    <p>Olá teste </p>
+ <a href="#Objective">Objective</a>
+    <p> The Objective of this project is to analyse my behavior in a delivery App after the Covid Pandemic of 2020, that includes my Average Spend, Frequency of order and a Hypothesis Test  </p>
 </p>
