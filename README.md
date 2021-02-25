@@ -17,6 +17,7 @@
         <p align = "center"> The analysis includes my Average Spend, Frequency of use and a Hypothesis Test to compare if there is a difference between those metrics Before/After. Also, I created a Markov chain to serve as a predictive model to my Next purchase Date</p>
 </p>
 
+<p align = "center">
 ### Order of Analysis
 
 - [x] Average Spend
@@ -24,3 +25,4 @@
 - [x] Total Spent per Month
 - [x] Mann Whitney Test (Frequency and Spend)
 - [x] Markov chain (Day of week -> Day of week)
+</p>
