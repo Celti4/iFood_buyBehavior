@@ -14,7 +14,7 @@
 
 <p align="center">
     <a href = "#Description">Description</a>
-        <p align = "center"> The analysis includes my Average Spend, Frequency of use and a Hypothesis Test to compare if there is a difference between those metrics Before/After</p>
+        <p align = "center"> The analysis includes my Average Spend, Frequency of use and a Hypothesis Test to compare if there is a difference between those metrics Before/After. Also, I created a Markov chain to serve as a predictive model to my Next purchase Date</p>
 </p>
 
 
