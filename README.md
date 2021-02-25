@@ -19,8 +19,8 @@
 
 ### Order of Analysis
 
-[x] Average Spend
-[x] Frequency of order
-[x] Total Spent per Month
-[x] Mann Whitney Test (Frequency and Spend)
-[x] Markov chain (Day of week -> Day of week)
+- [x] Average Spend
+- [x] Frequency of order
+- [x] Total Spent per Month
+- [x] Mann Whitney Test (Frequency and Spend)
+- [x] Markov chain (Day of week -> Day of week)
