@@ -7,7 +7,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import scipy as sp
+import random
 
+random.seed(174853)
 
 # DATA MANIPULATION
 df = pd.read_csv(r'D:\Projetos\iFood\dadosIgnacio.csv', delimiter = ";", parse_dates= ['data_pedido'], dayfirst= True)
@@ -56,8 +58,8 @@ sns.lineplot(x = "Year-Month", y = "Average Spend", data = dfMesNormal, linewidt
 sns.lineplot(x = "Year-Month", y = "Average Spend", data = dfMesCovid, linewidth = 2, label = "After Covid", markers = True)
 sns.lineplot(x = "Year-Month", y = "Mean", data = dfMesNormal, linewidth = 1, label = "Average Before Covid", color = "yellow", linestyle = "--")
 sns.lineplot(x = "Year-Month", y = "Mean", data = dfMesCovid, linewidth = 1, label = "Average After Covid", linestyle = "--")
-plt.title("Average Monthly Spend")
-plt.ylabel("Average Spend")
+plt.title("Average Ticket per Month")
+plt.ylabel("R$")
 plt.xlabel("Date")
 plt.legend(facecolor= 'white' , fontsize='large' , edgecolor = 'black' ,shadow=True)
 
@@ -79,7 +81,7 @@ sns.lineplot(x = "Year-Month", y = "Total", data = dfMesCovid, linewidth = 2, la
 sns.lineplot(x = "Year-Month", y = dfMesNormal.Total.mean(), data = dfMesNormal, linewidth = 1, label = "Average Before Covid", color = "yellow", linestyle = "--")
 sns.lineplot(x = "Year-Month", y = dfMesCovid.Total.mean(), data = dfMesCovid, linewidth = 1, label = "Average After Covid", linestyle = "--")
 plt.title("Total Spent per Month")
-plt.ylabel("Total R$ Spent")
+plt.ylabel("R$")
 plt.xlabel("Date")
 plt.legend(facecolor= 'white' , fontsize='large' , edgecolor = 'black' ,shadow=True)
 
@@ -88,7 +90,7 @@ plt.legend(facecolor= 'white' , fontsize='large' , edgecolor = 'black' ,shadow=T
 plt.figure(figsize = (12,12))
 sns.displot(x = "valor", data = df, hue = "Pandemia", kind = "kde")
 plt.title("R$ Spent Probability distribution")
-plt.xlabel("R$ Spent")
+plt.xlabel("R$")
 plt.legend(facecolor= 'white' , fontsize='large' , edgecolor = 'black' ,shadow=True)
 
 
@@ -139,7 +141,7 @@ dfCovid['difTime_Next'] = dfCovid['difTime_Next'].astype('timedelta64[D]')
 
 sns.displot(x = "difTime", data = dfCovid, kind = "kde")
 
-indexTrain = np.random.rand(len(dfCovid)) < 0.7
+indexTrain = np.random.rand(len(dfCovid)) < 0.75
 
 train_dfCovid = dfCovid[indexTrain]
 test_dfCovid = dfCovid[~indexTrain]
@@ -221,4 +223,14 @@ Result = Result.rename(index = {0:"Mon", 1:"Tue", 2:"Wed", 3:"Thu", 4:"Fri", 5:"
 weekDay_prob_test = round(test_dfCovid.groupby(["weekDay"]).valor.count()*100/test_dfCovid.valor.count())
 weekDay_prob_test = weekDay_prob_test.reindex(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
 
+Error_lost = int(sum(abs(Result.T.values - weekDay_prob_test.values).T))
+Acurracy = 100 - Error_lost
+print(Acurracy)
 
+
+
+## CREATING A REFERENCE
+
+plt.figure(figsize = (16,9))
+sns.heatmap(Markov_chain_prob, cmap = "coolwarm", annot = True)
+plt.yticks(rotation = 0)
