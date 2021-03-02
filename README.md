@@ -26,3 +26,5 @@
 - [x] Mann Whitney Test (Frequency and Spend)
 - [x] Markov chain (Day of week -> Day of week)
 
+
+<p> PT-BR Version of the analysis can be seen on https://ignacioamstalden.medium.com/o-impacto-da-pandemia-nos-gastos-do-ifood-416b5835e9af </p>
