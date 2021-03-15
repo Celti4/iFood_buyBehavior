@@ -8,6 +8,7 @@ import numpy as np
 import seaborn as sns
 import scipy as sp
 import random
+import statistics
 
 random.seed(174853)
 
@@ -49,57 +50,6 @@ dfMesCovid["AverageOrders"] = Media_Covid_Frequencia
 
 
 
-# GRAPHS
-# DESCRIPTIVE ANALYSYS
-
-plt.figure(figsize = (24,8))
-sns.set(rc={"axes.facecolor":"#283747", "axes.grid":False,'xtick.labelsize':10})
-sns.lineplot(x = "Year-Month", y = "Average Spend", data = dfMesNormal, linewidth = 2, label = "Before Covid", markers = True)
-sns.lineplot(x = "Year-Month", y = "Average Spend", data = dfMesCovid, linewidth = 2, label = "After Covid", markers = True)
-sns.lineplot(x = "Year-Month", y = "Mean", data = dfMesNormal, linewidth = 1, label = "Average Before Covid", color = "yellow", linestyle = "--")
-sns.lineplot(x = "Year-Month", y = "Mean", data = dfMesCovid, linewidth = 1, label = "Average After Covid", linestyle = "--")
-plt.title("Average Ticket per Month")
-plt.ylabel("R$")
-plt.xlabel("Date")
-plt.legend(facecolor= 'white' , fontsize='large' , edgecolor = 'black' ,shadow=True)
-
-plt.figure(figsize = (25,8))
-sns.lineplot(x = "Year-Month", y = "Orders", data = dfMesNormal, linewidth = 2, label = "Before Covid")
-sns.lineplot(x = "Year-Month", y = "Orders", data = dfMesCovid, linewidth = 2, label = "After Covid")
-sns.lineplot(x = "Year-Month", y = "AverageOrders", data = dfMesNormal, linewidth = 1, label = "Average Before Covid", color = "yellow", linestyle = "--")
-sns.lineplot(x = "Year-Month", y = "AverageOrders", data = dfMesCovid, linewidth = 1, label = "Average After Covid", linestyle = "--")
-plt.title("Monthly Number of orders")
-plt.ylabel("Number of Orders")
-plt.xlabel("Date")
-plt.legend(facecolor= 'white' , fontsize='large' , edgecolor = 'black' ,shadow=True)
-
-
-
-plt.figure(figsize = (25,8))
-sns.lineplot(x = "Year-Month", y = "Total", data = dfMesNormal, linewidth = 2, label = "Before Covid")
-sns.lineplot(x = "Year-Month", y = "Total", data = dfMesCovid, linewidth = 2, label = "After Covid")
-sns.lineplot(x = "Year-Month", y = dfMesNormal.Total.mean(), data = dfMesNormal, linewidth = 1, label = "Average Before Covid", color = "yellow", linestyle = "--")
-sns.lineplot(x = "Year-Month", y = dfMesCovid.Total.mean(), data = dfMesCovid, linewidth = 1, label = "Average After Covid", linestyle = "--")
-plt.title("Total Spent per Month")
-plt.ylabel("R$")
-plt.xlabel("Date")
-plt.legend(facecolor= 'white' , fontsize='large' , edgecolor = 'black' ,shadow=True)
-
-
-
-plt.figure(figsize = (12,12))
-sns.displot(x = "valor", data = df, hue = "Pandemia", kind = "kde")
-plt.title("R$ Spent Probability distribution")
-plt.xlabel("R$")
-plt.legend(facecolor= 'white' , fontsize='large' , edgecolor = 'black' ,shadow=True)
-
-
-
-
-
-df.groupby("Pandemia").valor.median()
-
-
 
 #TESTE DE WILCOXON-MANN-WHITNEY
 #Valor
@@ -139,12 +89,14 @@ dfCovid['difTime'] = dfCovid['difTime'].astype('timedelta64[D]')
 dfCovid['difTime'][0] = 4
 dfCovid['difTime_Next'] = dfCovid['difTime_Next'].astype('timedelta64[D]')
 
-sns.displot(x = "difTime", data = dfCovid, kind = "kde")
 
-indexTrain = np.random.rand(len(dfCovid)) < 0.75
+
+#indexTrain = np.random.rand(len(dfCovid)) < 0.75
+indexTrain = dfCovid["Year-Month"] < "2020-12"
 
 train_dfCovid = dfCovid[indexTrain]
 test_dfCovid = dfCovid[~indexTrain]
+test_dfCovid = test_dfCovid[test_dfCovid['difTime_Next'] > 0]
 
 
 Pivot = train_dfCovid.groupby(["difTime_Next", "weekDay"]).id_usuario.count().reset_index()
@@ -218,19 +170,56 @@ Result = pd.DataFrame(np.dot(Equal_distribution, Markov_chain_prob).round(decima
 
 Result = Result.rename(index = {0:"Mon", 1:"Tue", 2:"Wed", 3:"Thu", 4:"Fri", 5:"Sat", 6:"Sun"})
 
+
+
 #### TEST RESULTS
+# Trying to predict the next purchase date
 
-weekDay_prob_test = round(test_dfCovid.groupby(["weekDay"]).valor.count()*100/test_dfCovid.valor.count())
-weekDay_prob_test = weekDay_prob_test.reindex(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
+from NextPurchaseDateMarkov import MarkovNextPurchaseDate
 
-Error_lost = int(sum(abs(Result.T.values - weekDay_prob_test.values).T))
-Acurracy = 100 - Error_lost
-print(Acurracy)
+test_dfCovid = test_dfCovid[test_dfCovid["Year-Month"] == "2020-12"]
+testDayList = pd.DataFrame(test_dfCovid['weekDay'].reset_index(drop = True))
+
+resultsList = []
+
+for j in range(0, 1000):
+    count = 0 
+    for i in range(len(testDayList)-1):
+        if(MarkovNextPurchaseDate(testDayList.weekDay[i], Markov_chain_prob) == testDayList.weekDay[i+1]): 
+            count = count +1
+            
+    resultsList = np.append(resultsList, count)
+    
+    
+
+statistics.mean(resultsList)/(len(testDayList)-1) # Mean Accuracy
+
+### Creating reference ###
+
+dfGraphReference = pd.DataFrame(columns = ["Round", "modelScore", "randomScore", "perfectScore"])
+
+from NextPurchaseDateMarkov import randomDay
+
+scoreModel = 0
+randomScore = 0 
+for i in range(1, len(testDayList)): 
+    if(MarkovNextPurchaseDate(testDayList.weekDay[i-1], Markov_chain_prob) == testDayList.weekDay[i]): 
+        scoreModel = scoreModel +1
+    
+    if(randomDay() == testDayList.weekDay[i]):
+        randomScore = randomScore +1
+    
+    aux = []
+    aux.append([i, scoreModel, randomScore, i])
+    aux = pd.DataFrame(aux, columns = ["Round", "modelScore", "randomScore", "perfectScore"])
+    
+    dfGraphReference = pd.concat([dfGraphReference, aux])
 
 
 
-## CREATING A REFERENCE
 
-plt.figure(figsize = (16,9))
-sns.heatmap(Markov_chain_prob, cmap = "coolwarm", annot = True)
-plt.yticks(rotation = 0)
+
+
+
+
+
