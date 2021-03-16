@@ -28,3 +28,5 @@
 
 
 <p> PT-BR Version of the analysis can be seen on https://ignacioamstalden.medium.com/o-impacto-da-pandemia-nos-gastos-do-ifood-416b5835e9af </p>
+
+<p> PT-BR Version of the Markov Chain model can be seen on https://ignacioamstalden.medium.com/cadeia-de-markov-como-modelo-de-previs%C3%A3o-para-data-de-pr%C3%B3xima-compra-cb860166f008</p>
